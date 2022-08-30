@@ -36,6 +36,7 @@ Waits:
 https://selenium-python.readthedocs.io/waits.html
 
 
+sleep = driver.implicitly_wait(random.uniform(5.0, 10.0))
 
 
 #Argentina

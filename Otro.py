@@ -42,7 +42,7 @@ while True:
         driver.refresh()
 
 # Select to Initial Process
-for i in range(len(initialProcessList)): 
+for i in range(len(initialProcessList)):
     driver.implicitly_wait(10)
     initialProcess = driver.find_element(By.XPATH,initialProcessPath[i])
     initialProcess.click()

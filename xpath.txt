@@ -65,8 +65,3 @@ portugal = '//*[@id="select_option_980"]'
 united_kingdom = '//*[@id="select_option_1041"]'
 tunisia = '//*[@id="select_option_1032"]'
 turkey = '//*[@id="select_option_1033"]'
-
-
-
-
-/html/body/div[1]/div[24]/div[2]/div/div[1]/div[2]

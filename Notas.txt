@@ -50,3 +50,17 @@ while True:
         break # it will break from the loop once the specific element will be present. 
     except:
         print("Failed to click Argentina")
+
+
+
+Fecha y Hora en Python
+https://pythondiario.com/2014/05/obtener-fecha-y-hora-actual-en-python.html
+    import time
+
+    start = time.strftime("%H:%M:%S")
+    print(start)
+
+    print('Test')
+
+    end = time.strftime("%H:%M:%S")
+    print(end)

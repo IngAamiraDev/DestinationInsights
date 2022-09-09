@@ -1,3 +1,4 @@
+from sqlite3 import Time
 from selenium import webdriver #Se usa para el driver de Selenium con Chrome
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait #Esperas explícitas
@@ -6,8 +7,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 import time
 
-#start = time.time()
-start = time.perf_counter()
 
 driver = webdriver.Chrome(executable_path=r".\chromedriver\chromedriver.exe")
 submit_path = '/html/body/div[1]/div[24]/div[1]/div/div[5]/button'
@@ -39,6 +38,8 @@ date_range_list = ['Click','Last 30 days']
 date_range_id = ['select_39','select_option_49']
 
 
+start_time = time.strftime("%H:%M:%S")
+print('Start Time: ' + start_time)
 driver.get('https://destinationinsights.withgoogle.com')
 driver.maximize_window()
 
@@ -243,11 +244,8 @@ def run():
     download_process_1()
     download_process_2()
 
-#end = time.time()
-end = time.perf_counter()
-
-
 if __name__ == '__main__':
     run()
+    end_time = time.strftime("%H:%M:%S")
+    print('End Time ' + end_time)
     print('Finished Process')
-    print(end - start)

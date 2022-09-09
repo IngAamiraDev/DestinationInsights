@@ -1,3 +1,4 @@
+from sqlite3 import Time
 from selenium import webdriver #Se usa para el driver de Selenium con Chrome
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait #Esperas explícitas
@@ -6,8 +7,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 import time
 
-#start = time.time()
-start = time.perf_counter()
 
 driver = webdriver.Chrome(executable_path=r".\chromedriver\chromedriver.exe")
 submit_path = '/html/body/div[1]/div[24]/div[1]/div/div[5]/button'
@@ -19,8 +18,8 @@ initial_process_list = ['Cookies','FlightAccommodation']
 initial_process_path = ['//*[@id="cookieBar"]/div/span[2]/a[2]','/html/body/div[1]/div[24]/div[2]/div/div[1]/div[1]/p']
 
 #Primary Country
-primary_country_list = ['Argentina','Germany','Australia','Austria','Belgium','Canada','Czechia','China','Cyprus','Colombia','South Corea','Croatia','Denmark','Cgypt','United Arab Emirates','Spain','United States','Finland','France','Greece','India','Ireland','Israel','Italy','Japan','morocco','Mexico','Norway','Netherlands','Poland','Portugal','United Kingdom','Russia','Sweden','Switzerland','Tunisia','Turkey']
-primary_country_id = ['select_option_565','select_option_637','select_option_568','select_option_569','select_option_575','select_option_593','select_option_612','select_option_600','select_option_611','select_option_603','select_option_761','select_option_608','select_option_614','select_option_619','select_option_790','select_option_763','select_option_792','select_option_630','select_option_631','select_option_640','select_option_656','select_option_660','select_option_662','select_option_663','select_option_665','select_option_701','select_option_695','select_option_718','select_option_707','select_option_729','select_option_730','select_option_791','select_option_736','select_option_768','select_option_769','select_option_782','select_option_783']
+primary_country_list = ['Germany','Argentina','Australia','Austria','Belgium','Canada','Czechia','China','Cyprus','Colombia','South Corea','Croatia','Denmark','Egypt','United Arab Emirates','Spain','United States','Finland','France','Greece','India','Ireland','Israel','Italy','Japan','Morocco','Mexico','Norway','Netherlands','Poland','Portugal','United Kingdom','Russia','Sweden','Switzerland','Tunisia','Turkey']
+primary_country_id = ['select_option_637','select_option_565','select_option_568','select_option_569','select_option_575','select_option_593','select_option_612','select_option_600','select_option_611','select_option_603','select_option_761','select_option_608','select_option_614','select_option_619','select_option_790','select_option_763','select_option_792','select_option_630','select_option_631','select_option_640','select_option_656','select_option_660','select_option_662','select_option_663','select_option_665','select_option_701','select_option_695','select_option_718','select_option_707','select_option_729','select_option_730','select_option_791','select_option_736','select_option_768','select_option_769','select_option_782','select_option_783']
 
 #Compare to Country Download Process 1
 compare_country_list_1 = ['Germany', 'Cyprus', 'Croatia', 'Egypt', 'Spain', 'France', 'Greece', 'Italy', 'Morocco', 'Portugal']
@@ -38,9 +37,6 @@ demand_category_id = ['select_option_47', 'select_option_48']
 date_range_list = ['Click','Last 30 days']
 date_range_id = ['select_39','select_option_49']
 
-
-driver.get('https://destinationinsights.withgoogle.com')
-driver.maximize_window()
 
 
 #Countries Compare Click
@@ -156,7 +152,9 @@ def submit_validation():
             break
         except:
             print("Continue to Run")
-            driver.close()
+            driver.refresh()
+            download_process_1()
+            download_process_2()
 print("Click Submit is ready!")
 
 
@@ -175,12 +173,12 @@ def download_process_1():
                 Country.click()
                 print('Primary Country is: ' + primary_country_list[i])
                 submit()                
-                #submit_validation()              
+                submit_validation()              
                 download_click()
                 print('Download Accom ok: ' + primary_country_list[i]) 
                 demand_category_air()
                 submit()                
-                #submit_validation()              
+                submit_validation()              
                 download_click()
                 print('Download Air ok: ' + primary_country_list[i])
                 demand_category_accomm()
@@ -239,15 +237,25 @@ def initial_process():
         process.click()
 
 
+def load():
+    start_time = time.strftime("%H:%M:%S")
+    print('Start Time: ' + start_time)
+    driver.get('https://destinationinsights.withgoogle.com')
+    driver.maximize_window()
+
+
 def run():
+    load()
     download_process_1()
     download_process_2()
+    finished()
 
-#end = time.time()
-end = time.perf_counter()
+
+def finished():
+    end_time = time.strftime("%H:%M:%S")
+    print('End Time ' + end_time)
+    print('Finished Process')
 
 
 if __name__ == '__main__':
     run()
-    print('Finished Process')
-    print(end - start)

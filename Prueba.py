@@ -6,6 +6,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 import time
+import shutil
+import os
+import glob
 
 
 driver = webdriver.Chrome(executable_path=r".\chromedriver\chromedriver.exe")
@@ -18,8 +21,8 @@ initial_process_list = ['Cookies','FlightAccommodation']
 initial_process_path = ['//*[@id="cookieBar"]/div/span[2]/a[2]','/html/body/div[1]/div[24]/div[2]/div/div[1]/div[1]/p']
 
 #Primary Country
-primary_country_list = ['Argentina','Germany','Australia','Austria','Belgium','Canada','Czechia','China','Cyprus','Colombia','South Corea','Croatia','Denmark','Cgypt','United Arab Emirates','Spain','United States','Finland','France','Greece','India','Ireland','Israel','Italy','Japan','morocco','Mexico','Norway','Netherlands','Poland','Portugal','United Kingdom','Russia','Sweden','Switzerland','Tunisia','Turkey']
-primary_country_id = ['select_option_565','select_option_637','select_option_568','select_option_569','select_option_575','select_option_593','select_option_612','select_option_600','select_option_611','select_option_603','select_option_761','select_option_608','select_option_614','select_option_619','select_option_790','select_option_763','select_option_792','select_option_630','select_option_631','select_option_640','select_option_656','select_option_660','select_option_662','select_option_663','select_option_665','select_option_701','select_option_695','select_option_718','select_option_707','select_option_729','select_option_730','select_option_791','select_option_736','select_option_768','select_option_769','select_option_782','select_option_783']
+primary_country_list = ['Germany','Argentina','Australia','Austria','Belgium','Canada','Czechia','China','Cyprus','Colombia','South Corea','Croatia','Denmark','Egypt','United Arab Emirates','Spain','United States','Finland','France','Greece','India','Ireland','Israel','Italy','Japan','Morocco','Mexico','Norway','Netherlands','Poland','Portugal','United Kingdom','Russia','Sweden','Switzerland','Tunisia','Turkey']
+primary_country_id = ['select_option_637','select_option_565','select_option_568','select_option_569','select_option_575','select_option_593','select_option_612','select_option_600','select_option_611','select_option_603','select_option_761','select_option_608','select_option_614','select_option_619','select_option_790','select_option_763','select_option_792','select_option_630','select_option_631','select_option_640','select_option_656','select_option_660','select_option_662','select_option_663','select_option_665','select_option_701','select_option_695','select_option_718','select_option_707','select_option_729','select_option_730','select_option_791','select_option_736','select_option_768','select_option_769','select_option_782','select_option_783']
 
 #Compare to Country Download Process 1
 compare_country_list_1 = ['Germany', 'Cyprus', 'Croatia', 'Egypt', 'Spain', 'France', 'Greece', 'Italy', 'Morocco', 'Portugal']
@@ -38,10 +41,11 @@ date_range_list = ['Click','Last 30 days']
 date_range_id = ['select_39','select_option_49']
 
 
-start_time = time.strftime("%H:%M:%S")
-print('Start Time: ' + start_time)
-driver.get('https://destinationinsights.withgoogle.com')
-driver.maximize_window()
+file_source = 'C:\\Users\\user\\Downloads\\'
+file_flight = 'C:\\Users\\user\\Downloads\\Vuelos'
+file_accomm = 'C:\\Users\\user\\Downloads\\Alojamientos'
+
+x = 0
 
 
 #Countries Compare Click
@@ -137,37 +141,55 @@ def date_range():
 
 #Submit
 def submit():
+    time.sleep(3)
     submit = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.XPATH,submit_path))
-    for i in range(3):
-        driver.implicitly_wait(3)
-        try:            
+    for i in range(2):
+        time.sleep(0.3)
+        try:
             submit.click()            
+            submit = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.XPATH,submit_path)) 
         except:
-            print("Click submit is failed")
             break
-    time.sleep(10)
+    time.sleep(8)
 
 
-def submit_validation():
+def submit_validation_1(x):
     while True:
         try:
-            time.sleep(8)
+            time.sleep(6)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,submit_path)))
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,demand_from_css_selector)))            
             break
         except:
             print("Continue to Run")
-            driver.close()
+            driver.refresh()
+            page_validation()
+            delete_last_file(x)
+            download_process_1(x)
+print("Click Submit is ready!")
+
+
+def submit_validation_2(x):
+    while True:
+        try:
+            time.sleep(6)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,submit_path)))
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,demand_from_css_selector)))            
+            break
+        except:
+            print("Continue to Run")
+            driver.refresh()
+            page_validation()
+            delete_last_file(x)
+            download_process_2(x)
 print("Click Submit is ready!")
 
 
 #Download Process 1
-def download_process_1():
-    page_validation()
-    initial_process()
+def download_process_1(x):
     date_range()
-    countries_compare_1()  
-    for i in range(len(primary_country_list)): #len(primary_country_list)
+    countries_compare_1()    
+    for i in range(x,len(primary_country_list)):
         while True:
             try:
                 primary_country_click()
@@ -175,29 +197,38 @@ def download_process_1():
                 time.sleep(0.3)
                 Country.click()
                 print('Primary Country is: ' + primary_country_list[i])
-                submit()                
-                #submit_validation()              
+                demand_category_air()
+                submit()             
+                submit_validation_1(x)              
                 download_click()
-                print('Download Accom ok: ' + primary_country_list[i]) 
+                print('Download 1 Accom ok: ' + primary_country_list[i]) 
                 demand_category_air()
                 submit()                
-                #submit_validation()              
+                submit_validation_1(x)              
                 download_click()
-                print('Download Air ok: ' + primary_country_list[i])
+                print('Download 1 Air ok: ' + primary_country_list[i])
                 demand_category_accomm()
+                x += 1
                 break
             except:
-                print("Failed to click primary country")
+                print("Failed to primary country")
+                if (x < len(primary_country_list)):
+                    driver.refresh()
+                    page_validation()
+                    delete_last_file(x)
+                    download_process_1(x)
+                    break
+    x = 0
     print('Download Process 1 Ok')
 
 
 #Download Process 2
-def download_process_2():
+def download_process_2(x):
     driver.refresh()
     page_validation()
     date_range()
-    countries_compare_2()   
-    for i in range(len(primary_country_list)): #len(primary_country_list)
+    countries_compare_2()    
+    for i in range(x,len(primary_country_list)): #len(primary_country_list)
         while True:
             try:
                 primary_country_click()
@@ -206,18 +237,23 @@ def download_process_2():
                 Country.click()
                 print('Primary Country is: ' + primary_country_list[i])
                 submit()                
-                #submit_validation()            
+                submit_validation_2(x)            
                 download_click()
-                print('Download Accom ok: ' + primary_country_list[i]) 
+                print('Download 2 Accom ok: ' + primary_country_list[i]) 
                 demand_category_air()
                 submit()                
-                #submit_validation()           
+                submit_validation_2(x)           
                 download_click()
-                print('Download Air ok: ' + primary_country_list[i])
+                print('Download 2 Air ok: ' + primary_country_list[i])
                 demand_category_accomm()
                 break
             except:
                 print("Failed to click primary country")
+                if (x < len(primary_country_list)):
+                    driver.refresh()
+                    delete_last_file(x)
+                    download_process_2(x)
+                    break
     print('Download Process 2 Ok')
 
 
@@ -240,12 +276,54 @@ def initial_process():
         process.click()
 
 
-def run():
-    download_process_1()
-    download_process_2()
+def load():
+    start_time = time.strftime("%H:%M:%S")
+    print('Start Time: ' + start_time)
+    driver.get('https://destinationinsights.withgoogle.com')
+    driver.maximize_window()
 
-if __name__ == '__main__':
-    run()
+
+def get_files():
+    get_files = os.listdir(file_source)
+    flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
+    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
+    for i in flight_csv:  
+        shutil.move(file_source + i, file_flight)
+    for i in accom_csv:
+        shutil.move(file_source + i, file_accomm)
+
+
+def delete_last_file(x):
+    get_files = os.listdir(file_source)
+    flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
+    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
+    if len(accom_csv) > len(flight_csv):
+        files_path = os.path.join(file_source, '*')
+        files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
+        os.remove(files[0])
+    elif len(flight_csv) > len(accom_csv):
+        files_path = os.path.join(file_source, '*')
+        files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
+        os.remove(files[0])
+    else: 
+        x += 1
+
+
+def run():    
+    load()
+    page_validation()
+    initial_process()
+    download_process_1(x)
+    download_process_2(x)
+    get_files()
+    finished()
+
+
+def finished():
     end_time = time.strftime("%H:%M:%S")
     print('End Time ' + end_time)
     print('Finished Process')
+
+
+if __name__ == '__main__':    
+    run()

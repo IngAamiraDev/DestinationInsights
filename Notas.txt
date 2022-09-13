@@ -64,3 +64,8 @@ https://pythondiario.com/2014/05/obtener-fecha-y-hora-actual-en-python.html
 
     end = time.strftime("%H:%M:%S")
     print(end)
+
+
+
+La forma más pitónica de comparar dos listas en Python
+https://blog.finxter.com/la-forma-mas-pitonica-de-comparar-dos-listas-en-python/

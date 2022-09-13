@@ -1,5 +1,6 @@
 import shutil
 import os
+import glob
 
 #Crea un directorio
 #os.makedirs("C:/Users/user/Downloads/CSV GDI")
@@ -16,13 +17,14 @@ get_files = os.listdir(file_source)
 flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
 accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
 
-print(flight_csv)
+#for i in flight_csv:  
+    #shutil.move(file_source + i, file_flight)
 
-for i in flight_csv:  
-    shutil.move(file_source + i, file_flight)
+#for i in accom_csv:
+    #shutil.move(file_source + i, file_accomm)
 
-for i in accom_csv:
-    shutil.move(file_source + i, file_accomm)
+
+
 
 
 

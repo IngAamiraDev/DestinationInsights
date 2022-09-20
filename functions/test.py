@@ -1,53 +1,347 @@
+#from sqlite3 import Time
+from selenium import webdriver #Se usa para el driver de Selenium con Chrome
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait #Esperas explícitas
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
+import time
+import shutil
 import os
+import glob
 
-#print(len('Comparisons_From_2022-09-09_CY__FLIGHT__30_.csv')) #->47
-#print(len('Comparisons_From_2022-09-09_CY__ACCOMMODATION__30_.csv')) #->54
 
-cod_contry = ['DE','AR','AU','AT','BE','CA','CZ','CN','CY','CO','KR','HR','DK','EG','AE','ES','US','FI','FR','GR','IN','IE','IL','IT','JP','MA','MX','NO','NL','PL','PT','GB','RU','SE','CH','TN','TR']
+driver = webdriver.Chrome(executable_path=r".\chromedriver\chromedriver.exe")
+submit_path = '/html/body/div[1]/div[24]/div[1]/div/div[5]/button'
+download_css_selector = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.charts__header > div > svg.geographic-demand__export.ng-scope > use'
+demand_from_css_selector = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.demand__from--canva > svg'
+
+
+#Initial Process
+initial_process_list = ['Cookies','FlightAccommodation']
+initial_process_path = ['//*[@id="cookieBar"]/div/span[2]/a[2]','/html/body/div[1]/div[24]/div[2]/div/div[1]/div[1]/p']
+
+#Primary Country
+primary_country_list = ['Germany','Argentina','Australia','Austria','Belgium','Canada','Czechia','China','Cyprus','Colombia','South Corea','Croatia','Denmark','Egypt','United Arab Emirates','Spain','United States','Finland','France','Greece','India','Ireland','Israel','Italy','Japan','Morocco','Mexico','Norway','Netherlands','Poland','Portugal','United Kingdom','Russia','Sweden','Switzerland','Tunisia','Turkey']
 primary_country_id = ['select_option_637','select_option_565','select_option_568','select_option_569','select_option_575','select_option_593','select_option_612','select_option_600','select_option_611','select_option_603','select_option_761','select_option_608','select_option_614','select_option_619','select_option_790','select_option_763','select_option_792','select_option_630','select_option_631','select_option_640','select_option_656','select_option_660','select_option_662','select_option_663','select_option_665','select_option_701','select_option_695','select_option_718','select_option_707','select_option_729','select_option_730','select_option_791','select_option_736','select_option_768','select_option_769','select_option_782','select_option_783']
+
+#Compare to Country Download Process 1
+compare_country_list_1 = ['Germany', 'Cyprus', 'Croatia', 'Egypt', 'Spain', 'France', 'Greece', 'Italy', 'Morocco', 'Portugal']
+compare_country_id_1 = ['select_option_887', 'select_option_861', 'select_option_858', 'select_option_869', 'select_option_1013', 'select_option_881', 'select_option_890', 'select_option_913', 'select_option_951', 'select_option_980']
+
+#Compare to Country Download Process 2
+compare_country_list_2 = ['United Kingdom','Tunisia','Turkey']
+compare_country_id_2 = ['select_option_1041', 'select_option_1032','select_option_1033']
+
+#Demand Category
+demand_category_list = ['Air','Accommodation']
+demand_category_id = ['select_option_47', 'select_option_48']
+
+#Date Range
+date_range_list = ['Click','Last 30 days']
+date_range_id = ['select_39','select_option_49']
+
 
 file_source = 'C:\\Users\\user\\Downloads\\'
 file_flight = 'C:\\Users\\user\\Downloads\\Vuelos'
 file_accomm = 'C:\\Users\\user\\Downloads\\Alojamientos'
 
-get_files = os.listdir(file_source)
+x = 0
+y = 0
 
-flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
-accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
-
-
-def extract_cod_country(list):
-        if len(list) == 47:
-            return list[28:-17]
-        else:
-            return list[28:-24]
+#Countries Compare Click
+def countries_compare_click():     
+    click_category = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_33'))
+    driver.implicitly_wait(3)
+    click_category.click()
 
 
-def cod_country_flight():
-    print('Flight')
-    download_flight = [extract_cod_country(i) for i in flight_csv]
-    return print(download_flight)
+#Select to Demand Category Click
+def demand_category_click():     
+    click_category = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_36'))
+    driver.implicitly_wait(3)
+    click_category.click()
 
 
-def cod_country_accomm():
-    print('Accomm')
-    download_accomm = [extract_cod_country(i) for i in accom_csv]
-    return print(download_accomm)
+#Primary Country Click
+def primary_country_click():
+    country_click = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_30'))
+    driver.implicitly_wait(3)
+    country_click.click()
 
 
-print('download_flight')
-download_flight = [extract_cod_country(i) for i in flight_csv]
-print(download_flight)
+#Download click
+def download_click():
+    download = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.CSS_SELECTOR,download_css_selector))           
+    driver.implicitly_wait(3)
+    download.click()
+    time.sleep(8)
 
 
-print('missing_country')
-missing_country = [i for i in cod_contry if i not in download_flight]
-print(missing_country)
+#Select Countries to Compare Download Process 1
+def countries_compare_1():
+    countries_compare_click()
+    print('Country to compare is:')
+    for i in range(len(compare_country_list_1)):
+        driver.implicitly_wait(3)
+        while True:
+            try:      
+                countries = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,compare_country_id_1[i]))
+                countries.click()
+                print(compare_country_list_1[i])
+                break
+            except:
+                print('Failed to click countries to compare')
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
 
-print('cod_dict')
-cod_dict = {
-    "cod_country": cod_contry, "id_html": primary_country_id
-}
-print(cod_dict)
+#Select Countries to Compare Download Process 2
+def countries_compare_2():
+    countries_compare_click()
+    print('Country to compare is:')
+    for i in range(len(compare_country_list_2)):
+        driver.implicitly_wait(3)
+        while True:
+            try:      
+                countries = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,compare_country_id_2[i]))
+                countries.click()
+                print(compare_country_list_2[i])
+                break
+            except:
+                print('Failed to click countries to compare')
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
+
+def demand_category_air():
+    demand_category_click()
+    clear_accom = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_option_48'))
+    driver.implicitly_wait(3)
+    clear_accom.click()
+    air = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_option_47'))
+    driver.implicitly_wait(3)
+    air.click()
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    time.sleep(0.3)
+
+
+def demand_category_accomm():
+    demand_category_click()
+    clear_air = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_option_47'))
+    driver.implicitly_wait(3)
+    clear_air.click()
+    accomm = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_option_48'))
+    driver.implicitly_wait(3)
+    accomm.click()
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+    time.sleep(0.3)
+
+
+def date_range():
+    for i in range(len(date_range_list)): 
+        click_range = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,date_range_id[i]))
+        driver.implicitly_wait(3)
+        click_range.click()
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+
+
+#Submit
+def submit():     
+    time.sleep(3)
+    submit = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.XPATH,submit_path))
+    time.sleep(0.3)
+    submit.click()
+
+
+def submit_validation_1(x):
+    while True:
+        try:
+            time.sleep(6)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,submit_path)))
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,demand_from_css_selector)))            
+            break
+        except:
+            print("Continue to run")
+            driver.refresh()
+            page_validation()
+            delete_last_file_1(x)
+            download_process_1(x)
+    print("Click submit is ready!")
+
+
+def submit_validation_2(y):
+    while True:
+        try:
+            time.sleep(6)
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,submit_path)))
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,demand_from_css_selector)))            
+            break
+        except:
+            print("Continue to run")
+            driver.refresh()
+            page_validation()
+            delete_last_file_2(y)
+            download_process_2(y)
+    print("Click submit is ready!")
+
+
+#Download Process 1
+def download_process_1(x):
+    date_range()
+    countries_compare_1() 
+    print('Primary country is:')  
+    for x in range(2): #len(primary_country_list)
+        while True:
+            try:
+                primary_country_click()
+                Country = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,primary_country_id[x]))
+                time.sleep(0.3)
+                Country.click()
+                print(primary_country_list[x])
+                demand_category_air()
+                submit()             
+                submit_validation_1(x)              
+                download_click()
+                print('Download 1 Accom ok: ' + primary_country_list[x]) 
+                demand_category_air()
+                submit()                
+                submit_validation_1(x)              
+                download_click()
+                print('Download 1 Air ok: ' + primary_country_list[x])
+                demand_category_accomm()
+                break
+            except:
+                print("Failed to primary country")
+                if (x < len(primary_country_list)):
+                    driver.refresh()
+                    page_validation()
+                    delete_last_file_1(x)
+                    download_process_1(x)
+                    break
+    x = 0
+    print('Download process 1 Ok')
+    driver.refresh()
+    page_validation()
+
+
+#Download Process 2
+def download_process_2(y):    
+    date_range()
+    countries_compare_2()
+    print('Primary country is:')
+    for y in range(len(primary_country_list)): #len(primary_country_list)
+        while True:
+            try:
+                primary_country_click()
+                Country = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,primary_country_id[y]))
+                time.sleep(0.3)
+                Country.click()
+                print(primary_country_list[y])
+                submit()                
+                submit_validation_2(y)            
+                download_click()
+                print('Download 2 Accom ok: ' + primary_country_list[y]) 
+                demand_category_air()
+                submit()                
+                submit_validation_2(y)           
+                download_click()
+                print('Download 2 Air ok: ' + primary_country_list[y])
+                demand_category_accomm()
+                break
+            except:
+                print("Failed to click primary country")
+                if (y < len(primary_country_list)):
+                    driver.refresh()
+                    delete_last_file_2(y)
+                    download_process_2(y)
+                    break
+    print('Download process 2 Ok')
+
+
+def page_validation():
+    while True:
+        try:
+            driver.implicitly_wait(3)
+            page_ready = WebDriverWait(driver, 20).until(EC.text_to_be_present_in_element((By.ID,'select_30'),'Spain'))
+            print("Page is ready!")
+            break 
+        except TimeoutException:
+            print("Loading took too much time!-try again")
+            driver.refresh()
+
+
+def initial_process():
+    for i in range(len(initial_process_list)):
+        process = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.XPATH,initial_process_path[i]))        
+        driver.implicitly_wait(3)
+        process.click()
+
+
+def load():
+    start_time = time.strftime("%H:%M:%S")
+    print('Start Time: ' + start_time)
+    driver.get('https://destinationinsights.withgoogle.com')
+    driver.maximize_window()
+
+
+def get_files():
+    get_files = os.listdir(file_source)
+    flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
+    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
+    for i in flight_csv:  
+        shutil.move(file_source + i, file_flight)
+    for i in accom_csv:
+        shutil.move(file_source + i, file_accomm)
+
+
+def delete_last_file_1(x):
+    get_files = os.listdir(file_source)
+    flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
+    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
+    if len(accom_csv) > len(flight_csv):
+        files_path = os.path.join(file_source, '*')
+        files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
+        os.remove(files[0])
+    elif len(flight_csv) > len(accom_csv):
+        files_path = os.path.join(file_source, '*')
+        files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
+        os.remove(files[0])
+    else: 
+        x += 1
+    return x
+
+
+def delete_last_file_2(y):
+    get_files = os.listdir(file_source)
+    flight_csv = [i for i in get_files if i.startswith('FLIGHT__30_ (1)',32,47)]
+    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION__30_ (1)',32,54)]
+    if len(accom_csv) > len(flight_csv):
+        files_path = os.path.join(file_source, '*')
+        files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
+        os.remove(files[0])
+    elif len(flight_csv) > len(accom_csv):
+        files_path = os.path.join(file_source, '*')
+        files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
+        os.remove(files[0])
+    else: 
+        y += 1
+    return y
+
+
+def run():    
+    load()
+    page_validation()
+    initial_process()
+    download_process_1(x)
+    download_process_2(y)
+    get_files()
+    finished()
+
+
+def finished():
+    end_time = time.strftime("%H:%M:%S")
+    print('End Time ' + end_time)
+    print('Finished Process')
+
+
+if __name__ == '__main__':    
+    run()

@@ -9,7 +9,10 @@ primaryCountry = '//*[@id="select_30"]'
 countriesCompare = '//*[@id="select_33"]'
 submit = '/html/body/div[1]/div[24]/div[1]/div/div[5]/button'
 download = '/html/body/div[1]/div[24]/div[2]/div/div[2]/div[1]/div/svg[2]'
-/html/body/div[1]/div[24]/div[2]/div/div[2]/div[1]/div/svg[2]/use
+
+demand_from_css_selector = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.demand__from--canva > svg > g > g:nth-child(23) > text:nth-child(1)' *
+
+demand_from_css_selector_2 = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.demand__from--canva > svg'
 
 --xPath Países Principales: (37)
 germany = '//*[@id="select_option_637"]'

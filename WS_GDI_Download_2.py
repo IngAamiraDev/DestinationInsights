@@ -52,6 +52,8 @@ def extract_cod_country(list):
 def load():
     start_time = time.strftime("%H:%M:%S")
     print('Start Time: ' + start_time)
+    options = webdriver.ChromeOptions() 
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])    
     driver.get('https://destinationinsights.withgoogle.com')
     driver.maximize_window()
 
@@ -77,7 +79,7 @@ def page_validation(j):
             else:
                 driver.close()
                 print('Try again later')
-                quit()
+                exit()
 
 
 def initial_process():

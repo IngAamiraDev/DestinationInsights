@@ -1,8 +1,8 @@
 import shutil
 import os
 import collections
-import WS_GDI_Download_1
-import WS_GDI_Download_2
+import Index_Download_1
+import Index_Download_2
 
 primary_country_cod = ['DE','AR','AU','AT','BE','CA','CZ','CN','CY','CO','KR','HR','DK','EG','AE','ES','US','FI','FR','GR','IN','IE','IL','IT','JP','MA','MX','NO','NL','PL','PT','GB','RU','SE','CH','TN','TR']
 file_source = 'C:\\Users\\user\\Downloads\\'
@@ -73,18 +73,18 @@ def files_path():
 
 def run():
     if (download_status() == 0):
-        WS_GDI_Download_1.run()
+        Index_Download_1.run()
         y = False
     else: 
         y = False
     if (download_status_2() == 0):
-        WS_GDI_Download_2.run()
+        Index_Download_2.run()
         z = False
     else:
         z = False
     if ( (y != True) and (z != True) ):
         pass
-        files_path()       
+        #files_path()       
     else:
         print('Failed process')
 

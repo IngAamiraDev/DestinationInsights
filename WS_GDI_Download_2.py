@@ -10,7 +10,9 @@ import glob
 import collections
 
 
-driver = webdriver.Chrome(executable_path=r".\chromedriver\chromedriver.exe")
+options = webdriver.ChromeOptions() 
+options.add_experimental_option("excludeSwitches", ["enable-logging"])
+driver = webdriver.Chrome(options=options, executable_path=r".\chromedriver\chromedriver.exe")
 submit_path = '/html/body/div[1]/div[24]/div[1]/div/div[5]/button'
 download_css_selector = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.charts__header > div > svg.geographic-demand__export.ng-scope > use'
 demand_from_css_selector = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.demand__from--canva > svg'
@@ -38,8 +40,6 @@ date_range_list = ['Click','Last 30 days']
 date_range_id = ['select_39','select_option_49']
 
 file_source = 'C:\\Users\\user\\Downloads\\'
-
-get_files = os.listdir(file_source)
 
 
 def extract_cod_country(list):
@@ -73,7 +73,7 @@ def page_validation(j):
             break
         except TimeoutException:
             i += 1
-            if (i <= 7):
+            if (i <= 8):
                 print("Loading took too much time!-try again")
                 driver.refresh()
             else:
@@ -201,6 +201,7 @@ def submit_validation_2(x):
 
 
 def delete_last_file():
+    get_files = os.listdir(file_source)
     flight_csv = [i for i in get_files if i.startswith('FLIGHT__30_ (1)',32,47)]
     accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION__30_ (1)',32,54)]
     if len(accom_csv) > len(flight_csv):
@@ -216,6 +217,7 @@ def delete_last_file():
 
 
 def len_country_missing():
+    get_files = os.listdir(file_source)
     flight_csv = [i for i in get_files if i.startswith('FLIGHT__30_ (1)',32,47)]
     accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION__30_ (1)',32,54)]
     download_flight = [extract_cod_country(i) for i in flight_csv]
@@ -227,6 +229,7 @@ def len_country_missing():
 
 
 def download_status():
+    get_files = os.listdir(file_source)
     flight_csv = [i for i in get_files if i.startswith('FLIGHT__30_ (1)',32,47)]
     accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION__30_ (1)',32,54)]
     download_flight = [extract_cod_country(i) for i in flight_csv]

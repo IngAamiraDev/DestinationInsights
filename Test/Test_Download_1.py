@@ -10,7 +10,9 @@ import glob
 import collections
 
 
-driver = webdriver.Chrome(executable_path=r".\chromedriver\chromedriver.exe")
+options = webdriver.ChromeOptions() 
+options.add_experimental_option("excludeSwitches", ["enable-logging"])
+driver = webdriver.Chrome(options=options, executable_path=r".\chromedriver\chromedriver.exe")
 submit_path = '/html/body/div[1]/div[24]/div[1]/div/div[5]/button'
 download_css_selector = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.charts__header > div > svg.geographic-demand__export.ng-scope > use'
 demand_from_css_selector = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.demand__from--canva > svg'
@@ -40,26 +42,10 @@ date_range_id = ['select_39','select_option_49']
 file_source = 'C:\\Users\\user\\Downloads\\'
 
 
-def extract_cod_country(list):
-        if len(list) == 47:
-            return list[28:-17]
-        else:
-            return list[28:-24]
-
-
-get_files = os.listdir(file_source)
-flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
-accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
-
-download_flight = [extract_cod_country(i) for i in flight_csv]
-download_accomm = [extract_cod_country(i) for i in accom_csv]
-download_file = [i for i in download_flight if i in download_accomm]
-download_missing = [i for i in primary_country_cod if i not in download_file]
-
-
 def load():
     start_time = time.strftime("%H:%M:%S")
-    print('Start Time: ' + start_time)
+    start_date = time.strftime("%d/%m/%Y")
+    print('Download process 1 started: ' + start_date + ' ' + start_time)
     driver.get('https://destinationinsights.withgoogle.com')
     driver.maximize_window()
 
@@ -77,15 +63,17 @@ def page_validation(j):
             if ((page_ready == True) and (graphics_ready != any)):
                 print("Page is ready!")
             break
-        except TimeoutException:
+        except: #TimeoutException:
             i += 1
-            if (i < 6):
+            if (i <= 2):
                 print("Loading took too much time!-try again")
                 driver.refresh()
-            else:
-                driver.close()
-                print('Try again later')
-                quit()
+            driver.close()                
+            print('Try again later')
+                #exit()
+                #pass
+    #execution = False
+    print('Finish page validation')
 
 
 def initial_process():
@@ -173,9 +161,11 @@ def demand_category_accomm():
     clear_air = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_option_47'))
     driver.implicitly_wait(3)
     clear_air.click()
+    time.sleep(0.05)
     accomm = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_option_48'))
     driver.implicitly_wait(3)
     accomm.click()
+    time.sleep(0.05)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
 
@@ -205,6 +195,9 @@ def submit_validation_1(x):
 
 
 def delete_last_file():
+    get_files = os.listdir(file_source)
+    flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
+    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
     if len(accom_csv) > len(flight_csv):
         files_path = os.path.join(file_source, '*')
         files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
@@ -217,14 +210,35 @@ def delete_last_file():
         pass
 
 
+def extract_cod_country(list):
+        if len(list) == 47:
+            return list[28:-17]
+        else:
+            return list[28:-24]
+
+
 def len_country_missing():
+    get_files = os.listdir(file_source)
+    flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
+    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
+    download_flight = [extract_cod_country(i) for i in flight_csv]
+    download_accomm = [extract_cod_country(i) for i in accom_csv]
+    download_file = [i for i in download_flight if i in download_accomm]
+    download_missing = [i for i in primary_country_cod if i not in download_file]    
     kick_off = len(primary_country_name) - len(download_missing)
     return kick_off
 
 
 def download_status():
+    get_files = os.listdir(file_source)
+    flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
+    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
+    download_flight = [extract_cod_country(i) for i in flight_csv]
+    download_accomm = [extract_cod_country(i) for i in accom_csv]
+    download_file = [i for i in download_flight if i in download_accomm]
+    download_missing = [i for i in primary_country_cod if i not in download_file]
     if (collections.Counter(download_file) == collections.Counter(primary_country_cod)):
-        print('Download process Ok')
+        print('Download process 1 Ok')
     else:
         print('Downloaded countries: ' + str(download_file))
         print('Pending countries: ' + str(download_missing))
@@ -237,8 +251,8 @@ def status():
 
 def finished():
     end_time = time.strftime("%H:%M:%S")
-    print('End Time ' + end_time)
-    print('Finished Process')
+    end_date = time.strftime("%d/%m/%Y")
+    print('Finished process download 1: ' + end_date + ' ' + end_time)
     driver.close()
 
 
@@ -257,7 +271,7 @@ def download_process_1(x):
                 print(primary_country_name[i])
                 demand_category_air()
                 submit() 
-                submit_validation_1(x)              
+                submit_validation_1(x)         
                 download_click()
                 demand_category_air()
                 submit()               
@@ -274,10 +288,10 @@ def download_process_1(x):
                     status()
                     download_process_1(x)
                     exit()
-    print('Download process 1 Ok')
+    print('Process 1 Ok')
 
 
-def run():    
+def run():
     load()
     page_validation(1)
     initial_process()
@@ -286,5 +300,5 @@ def run():
     finished()
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':   
     run()

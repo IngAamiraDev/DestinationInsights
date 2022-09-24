@@ -10,7 +10,9 @@ import glob
 import collections
 
 
-driver = webdriver.Chrome(executable_path=r".\chromedriver\chromedriver.exe")
+options = webdriver.ChromeOptions() 
+options.add_experimental_option("excludeSwitches", ["enable-logging"])
+driver = webdriver.Chrome(options=options, executable_path=r".\chromedriver\chromedriver.exe")
 submit_path = '/html/body/div[1]/div[24]/div[1]/div/div[5]/button'
 download_css_selector = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.charts__header > div > svg.geographic-demand__export.ng-scope > use'
 demand_from_css_selector = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.demand__from--canva > svg'
@@ -39,28 +41,19 @@ date_range_id = ['select_39','select_option_49']
 
 file_source = 'C:\\Users\\user\\Downloads\\'
 
-get_files = os.listdir(file_source)
-
-
-def extract_cod_country(list):
-        if len(list) == 47:
-            return list[28:-17]
-        else:
-            return list[28:-24]
-
 
 def load():
     start_time = time.strftime("%H:%M:%S")
-    print('Start Time: ' + start_time)
-    options = webdriver.ChromeOptions() 
-    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    start_date = time.strftime("%d/%m/%Y")
+    print('Download process 1 started: ' + start_date + ' ' + start_time)
     driver.get('https://destinationinsights.withgoogle.com')
     driver.maximize_window()
 
 
 def page_validation(j):
     i = 1
-    while True:
+    execution = True
+    while execution:
         try:
             driver.implicitly_wait(3)
             page_ready = WebDriverWait(driver, 20).until(EC.text_to_be_present_in_element((By.ID,'select_30'),'Spain'))
@@ -73,13 +66,16 @@ def page_validation(j):
             break
         except TimeoutException:
             i += 1
-            if (i < 6):
+            if (i <= 8):
                 print("Loading took too much time!-try again")
                 driver.refresh()
             else:
-                driver.close()
+                driver.close()                
                 print('Try again later')
-                exit()
+                #exit()
+                #pass
+    #execution = False
+    print('Finish page validation')
 
 
 def initial_process():
@@ -201,6 +197,7 @@ def submit_validation_1(x):
 
 
 def delete_last_file():
+    get_files = os.listdir(file_source)
     flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
     accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
     if len(accom_csv) > len(flight_csv):
@@ -215,7 +212,15 @@ def delete_last_file():
         pass
 
 
+def extract_cod_country(list):
+        if len(list) == 47:
+            return list[28:-17]
+        else:
+            return list[28:-24]
+
+
 def len_country_missing():
+    get_files = os.listdir(file_source)
     flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
     accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
     download_flight = [extract_cod_country(i) for i in flight_csv]
@@ -227,6 +232,7 @@ def len_country_missing():
 
 
 def download_status():
+    get_files = os.listdir(file_source)
     flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
     accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
     download_flight = [extract_cod_country(i) for i in flight_csv]
@@ -234,7 +240,7 @@ def download_status():
     download_file = [i for i in download_flight if i in download_accomm]
     download_missing = [i for i in primary_country_cod if i not in download_file]
     if (collections.Counter(download_file) == collections.Counter(primary_country_cod)):
-        print('Download process Ok')
+        print('Download process 1 Ok')
     else:
         print('Downloaded countries: ' + str(download_file))
         print('Pending countries: ' + str(download_missing))
@@ -247,8 +253,8 @@ def status():
 
 def finished():
     end_time = time.strftime("%H:%M:%S")
-    print('End Time ' + end_time)
-    print('Finished Process')
+    end_date = time.strftime("%d/%m/%Y")
+    print('Finished process download 1: ' + end_date + ' ' + end_time)
     driver.close()
 
 
@@ -287,7 +293,7 @@ def download_process_1(x):
     print('Process 1 Ok')
 
 
-def run():    
+def run():
     load()
     page_validation(1)
     initial_process()
@@ -296,5 +302,5 @@ def run():
     finished()
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':   
     run()

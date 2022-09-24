@@ -10,7 +10,9 @@ import glob
 import collections
 
 
-driver = webdriver.Chrome(executable_path=r".\chromedriver\chromedriver.exe")
+options = webdriver.ChromeOptions() 
+options.add_experimental_option("excludeSwitches", ["enable-logging"])
+driver = webdriver.Chrome(options=options, executable_path=r".\chromedriver\chromedriver.exe")
 submit_path = '/html/body/div[1]/div[24]/div[1]/div/div[5]/button'
 download_css_selector = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.charts__header > div > svg.geographic-demand__export.ng-scope > use'
 demand_from_css_selector = 'body > div:nth-child(2) > div.glue-mod-spacer-6-bottom.glue-mod-spacer-6-top > div.compare.glue-mod-spacer-5-bottom > div > div.demand__from > div.demand__from--canva > svg'

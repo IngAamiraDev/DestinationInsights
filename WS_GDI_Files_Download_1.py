@@ -1,7 +1,7 @@
 import shutil
 import os
 import collections
-import Test_Index_Download_1
+import WS_GDI_Index_Download_1
 
 primary_country_cod = ['DE','AR','AU','AT','BE','CA','CZ','CN','CY','CO','KR','HR','DK','EG','AE','ES','US','FI','FR','GR','IN','IE','IL','IT','JP','MA','MX','NO','NL','PL','PT','GB','RU','SE','CH','TN','TR']
 file_source = 'C:\\Users\\user\\Downloads\\'
@@ -49,7 +49,7 @@ def download_status():
 
 def run():
     if (download_status() == 0):
-        Test_Index_Download_1.run()
+        WS_GDI_Index_Download_1.run()
     print('Download process 1 Ok')
 
 

@@ -8,7 +8,7 @@ import time
 import os
 import glob
 import collections
-import shutil
+#import shutil
 
 
 options = webdriver.ChromeOptions() 

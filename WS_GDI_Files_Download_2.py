@@ -55,9 +55,9 @@ def download_status():
     download_missing = [i for i in primary_country_cod if i not in download_file]
     if (collections.Counter(download_file) == collections.Counter(primary_country_cod)):
         print('Download process 2 Ok')
-        x = 1
         rename_file_download()
         files_path()
+        x = 1
     else:
         print('Failed process download 2')
         print('Downloaded countries: ' + str(download_file))

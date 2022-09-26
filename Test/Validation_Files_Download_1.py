@@ -36,9 +36,9 @@ def download_status():
     download_file = [i for i in download_flight if i in download_accomm]
     download_missing = [i for i in primary_country_cod if i not in download_file]
     if (collections.Counter(download_file) == collections.Counter(primary_country_cod)):
-        print('Download process 1 Ok')
-        x = 1
+        print('Download process 1 Ok') 
         files_path()
+        x = 1        
     else:
         print('Failed process download 1')
         print('Downloaded countries: ' + str(download_file))

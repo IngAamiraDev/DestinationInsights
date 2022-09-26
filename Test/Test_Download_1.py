@@ -3,12 +3,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait #Esperas explícitas
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import TimeoutException
 import time
 import os
 import glob
 import collections
-import shutil
 
 
 options = webdriver.ChromeOptions() 
@@ -66,17 +64,15 @@ def page_validation(j):
             if ((page_ready == True) and (graphics_ready != any)):
                 print("Page is ready!")
             break
-        except: #TimeoutException:
+        except:
             i += 1
-            if (i <= 2):
+            if (i <= 8):
                 print("Loading took too much time!-try again")
                 driver.refresh()
-            driver.close()                
-            print('Try again later')
-                #exit()
-                #pass
-    #execution = False
-    print('Finish page validation')
+            else:
+                driver.close()
+                print('Try again later')
+                exit()
 
 
 def initial_process():

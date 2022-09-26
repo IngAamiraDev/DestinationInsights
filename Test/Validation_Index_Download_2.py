@@ -64,7 +64,7 @@ def page_validation(j):
             break
         except TimeoutException:
             i += 1
-            if (i <= 1):
+            if (i <= 8):
                 print("Loading took too much time!-try again")
                 driver.refresh()
             else:

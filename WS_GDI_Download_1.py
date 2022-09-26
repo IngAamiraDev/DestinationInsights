@@ -8,6 +8,7 @@ import time
 import os
 import glob
 import collections
+import shutil
 
 
 options = webdriver.ChromeOptions() 
@@ -40,6 +41,8 @@ date_range_list = ['Click','Last 30 days']
 date_range_id = ['select_39','select_option_49']
 
 file_source = 'C:\\Users\\user\\Downloads\\'
+file_flight = 'C:\\Users\\user\\Downloads\\Vuelos'
+file_accomm = 'C:\\Users\\user\\Downloads\\Alojamientos'
 
 
 def load():
@@ -52,8 +55,7 @@ def load():
 
 def page_validation(j):
     i = 1
-    execution = True
-    while execution:
+    while True:
         try:
             driver.implicitly_wait(3)
             page_ready = WebDriverWait(driver, 20).until(EC.text_to_be_present_in_element((By.ID,'select_30'),'Spain'))
@@ -64,14 +66,13 @@ def page_validation(j):
             if ((page_ready == True) and (graphics_ready != any)):
                 print("Page is ready!")
             break
-        except TimeoutException:
+        except: #TimeoutException:
             i += 1
-            if (i <= 8):
+            if (i <= 2):
                 print("Loading took too much time!-try again")
                 driver.refresh()
-            else:
-                driver.close()                
-                print('Try again later')
+            driver.close()                
+            print('Try again later')
                 #exit()
                 #pass
     #execution = False

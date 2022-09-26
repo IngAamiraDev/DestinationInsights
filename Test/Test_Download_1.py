@@ -8,6 +8,7 @@ import time
 import os
 import glob
 import collections
+import shutil
 
 
 options = webdriver.ChromeOptions() 
@@ -40,6 +41,8 @@ date_range_list = ['Click','Last 30 days']
 date_range_id = ['select_39','select_option_49']
 
 file_source = 'C:\\Users\\user\\Downloads\\'
+file_flight = 'C:\\Users\\user\\Downloads\\Vuelos'
+file_accomm = 'C:\\Users\\user\\Downloads\\Alojamientos'
 
 
 def load():

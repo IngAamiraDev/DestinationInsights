@@ -125,3 +125,33 @@ https://pythondiario.com/2021/02/como-ejecutar-scripts-python-automaticamente-to
 
 Cómo automatizar un script de Python en Windows:
 https://anderfernandez.com/blog/automatizar-script-python-windows-mac/
+
+
+
+
+def download_status_2():
+    flight_csv_1 = [i for i in get_files if i.startswith('FLIGHT__30_ (1)',32,47)]
+    accom_csv_1 = [i for i in get_files if i.startswith('ACCOMMODATION__30_ (1)',32,54)]
+    download_flight_1 = [extract_cod_country_1(i) for i in flight_csv_1]
+    download_accomm_1 = [extract_cod_country_1(i) for i in accom_csv_1]
+    download_file_1 = [i for i in download_flight_1 if i in download_accomm_1]
+    download_missing_1 = [i for i in primary_country_cod if i not in download_file_1]
+    if (collections.Counter(download_file_1) == collections.Counter(primary_country_cod)):
+        print('Download process 2 Ok')
+        rename_file_download_2()      
+        files_path()
+        x = 1
+    else:
+        print('Failed process download 2')
+        print('Downloaded countries: ' + str(download_file_1))
+        print('Pending countries: ' + str(download_missing_1))
+        x = 0
+    return x
+
+
+
+def extract_cod_country_1(list):
+        if len(list) == 51:
+            return list[28:-21]
+        else:
+            return list[28:-28]

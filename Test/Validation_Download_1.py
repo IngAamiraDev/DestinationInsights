@@ -8,6 +8,7 @@ import time
 import os
 import glob
 import collections
+import shutil
 
 
 options = webdriver.ChromeOptions() 
@@ -40,18 +41,14 @@ date_range_list = ['Click','Last 30 days']
 date_range_id = ['select_39','select_option_49']
 
 file_source = 'C:\\Users\\user\\Downloads\\'
-
-
-def extract_cod_country(list):
-        if len(list) == 47:
-            return list[28:-17]
-        else:
-            return list[28:-24]
+file_flight = 'C:\\Users\\user\\Downloads\\Vuelos'
+file_accomm = 'C:\\Users\\user\\Downloads\\Alojamientos'
 
 
 def load():
     start_time = time.strftime("%H:%M:%S")
-    print('Start Time: ' + start_time)
+    start_date = time.strftime("%d/%m/%Y")
+    print('Download process 1 started: ' + start_date + ' ' + start_time)
     driver.get('https://destinationinsights.withgoogle.com')
     driver.maximize_window()
 
@@ -69,15 +66,17 @@ def page_validation(j):
             if ((page_ready == True) and (graphics_ready != any)):
                 print("Page is ready!")
             break
-        except TimeoutException:
+        except: #TimeoutException:
             i += 1
-            if (i < 6):
+            if (i <= 2):
                 print("Loading took too much time!-try again")
                 driver.refresh()
-            else:
-                driver.close()
-                print('Try again later')
-                exit()
+            driver.close()                
+            print('Try again later')
+                #exit()
+                #pass
+    #execution = False
+    print('Finish page validation')
 
 
 def initial_process():
@@ -214,6 +213,13 @@ def delete_last_file():
         pass
 
 
+def extract_cod_country(list):
+        if len(list) == 47:
+            return list[28:-17]
+        else:
+            return list[28:-24]
+
+
 def len_country_missing():
     get_files = os.listdir(file_source)
     flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
@@ -235,7 +241,7 @@ def download_status():
     download_file = [i for i in download_flight if i in download_accomm]
     download_missing = [i for i in primary_country_cod if i not in download_file]
     if (collections.Counter(download_file) == collections.Counter(primary_country_cod)):
-        print('Download process Ok')
+        print('Download process 1 Ok')
     else:
         print('Downloaded countries: ' + str(download_file))
         print('Pending countries: ' + str(download_missing))
@@ -248,8 +254,8 @@ def status():
 
 def finished():
     end_time = time.strftime("%H:%M:%S")
-    print('End Time ' + end_time)
-    print('Finished Process')
+    end_date = time.strftime("%d/%m/%Y")
+    print('Finished process download 1: ' + end_date + ' ' + end_time)
     driver.close()
 
 
@@ -288,7 +294,7 @@ def download_process_1(x):
     print('Process 1 Ok')
 
 
-def run():    
+def run():
     load()
     page_validation(1)
     initial_process()
@@ -297,5 +303,5 @@ def run():
     finished()
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':   
     run()

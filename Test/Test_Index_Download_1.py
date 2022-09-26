@@ -346,7 +346,7 @@ def download_process_1(x):
                     status()
                     download_process_1(x)
                     exit()
-    print('Process 2 Ok')
+    print('Process 1 Ok')
 
 
 def run(x = index_primary_country_cod()):
@@ -358,7 +358,7 @@ def run(x = index_primary_country_cod()):
         status()
         download_process_1(x)
     else:
-        print('Process download 2 Ok')
+        print('Process download 1 Ok')
 
 
 if __name__ == '__main__':

@@ -3,11 +3,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait #Esperas explícitas
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import TimeoutException
+#from selenium.common.exceptions import TimeoutException
 import time
 import os
 import glob
 import collections
+#import shutil
 
 
 options = webdriver.ChromeOptions() 
@@ -40,18 +41,14 @@ date_range_list = ['Click','Last 30 days']
 date_range_id = ['select_39','select_option_49']
 
 file_source = 'C:\\Users\\user\\Downloads\\'
-
-
-def extract_cod_country(list):
-        if len(list) == 51:
-            return list[28:-21]
-        else:
-            return list[28:-28]
+file_flight = 'C:\\Users\\user\\Downloads\\Vuelos'
+file_accomm = 'C:\\Users\\user\\Downloads\\Alojamientos'
 
 
 def load():
     start_time = time.strftime("%H:%M:%S")
-    print('Start Time: ' + start_time)
+    start_date = time.strftime("%d/%m/%Y")
+    print('Download process 2 started: ' + start_date + ' ' + start_time)
     driver.get('https://destinationinsights.withgoogle.com')
     driver.maximize_window()
 
@@ -69,15 +66,14 @@ def page_validation(j):
             if ((page_ready == True) and (graphics_ready != any)):
                 print("Page is ready!")
             break
-        except TimeoutException:
+        except: #TimeoutException:
             i += 1
-            if (i <= 7):
-                print("Loading took too much time!-try again")
-                driver.refresh()
-            else:
-                driver.close()
+            if (i == 8):
+                print("Loading took too much time!-try again")     
+                driver.close()                
                 print('Try again later')
                 exit()
+    print('Finish page validation')
 
 
 def initial_process():
@@ -106,7 +102,7 @@ def countries_compare_click():
 
 
 #Select to Demand Category Click
-def demand_category_click():     
+def demand_category_click():
     click_category = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_36'))
     driver.implicitly_wait(3)
     click_category.click()
@@ -182,7 +178,7 @@ def submit():
     time.sleep(10)
 
 
-def submit_validation_2(x):
+def submit_validation(x):
     while True:
         try:
             time.sleep(6)
@@ -195,13 +191,13 @@ def submit_validation_2(x):
             page_validation(2)
             status()
             download_process_2(x)
-    print("Click Submit is ready!")
+    print("Click submit is ready!")
 
 
 def delete_last_file():
     get_files = os.listdir(file_source)
-    flight_csv = [i for i in get_files if i.startswith('FLIGHT__30_ (1)',32,47)]
-    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION__30_ (1)',32,54)]
+    flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
+    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
     if len(accom_csv) > len(flight_csv):
         files_path = os.path.join(file_source, '*')
         files = sorted(glob.iglob(files_path), key=os.path.getctime, reverse=True)
@@ -214,28 +210,35 @@ def delete_last_file():
         pass
 
 
+def extract_cod_country(list):
+        if len(list) == 47:
+            return list[28:-17]
+        else:
+            return list[28:-24]
+
+
 def len_country_missing():
     get_files = os.listdir(file_source)
-    flight_csv = [i for i in get_files if i.startswith('FLIGHT__30_ (1)',32,47)]
-    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION__30_ (1)',32,54)]
+    flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
+    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
     download_flight = [extract_cod_country(i) for i in flight_csv]
     download_accomm = [extract_cod_country(i) for i in accom_csv]
     download_file = [i for i in download_flight if i in download_accomm]
-    download_missing = [i for i in primary_country_cod if i not in download_file]
+    download_missing = [i for i in primary_country_cod if i not in download_file]    
     kick_off = len(primary_country_name) - len(download_missing)
     return kick_off
 
 
 def download_status():
     get_files = os.listdir(file_source)
-    flight_csv = [i for i in get_files if i.startswith('FLIGHT__30_ (1)',32,47)]
-    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION__30_ (1)',32,54)]
+    flight_csv = [i for i in get_files if i.startswith('FLIGHT',32,47)]
+    accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION',32,54)]
     download_flight = [extract_cod_country(i) for i in flight_csv]
     download_accomm = [extract_cod_country(i) for i in accom_csv]
     download_file = [i for i in download_flight if i in download_accomm]
     download_missing = [i for i in primary_country_cod if i not in download_file]
     if (collections.Counter(download_file) == collections.Counter(primary_country_cod)):
-        print('Download process Ok')
+        print('Download process 2 Ok')
     else:
         print('Downloaded countries: ' + str(download_file))
         print('Pending countries: ' + str(download_missing))
@@ -248,8 +251,8 @@ def status():
 
 def finished():
     end_time = time.strftime("%H:%M:%S")
-    print('End Time ' + end_time)
-    print('Finished Process')
+    end_date = time.strftime("%d/%m/%Y")
+    print('Finished process download 2: ' + end_date + ' ' + end_time)
     driver.close()
 
 
@@ -267,18 +270,18 @@ def download_process_2(x):
                 Country.click()
                 print(primary_country_name[i])
                 demand_category_air()
-                submit()                
-                submit_validation_2(x)      
+                submit() 
+                submit_validation(x)         
                 download_click()
                 demand_category_air()
-                submit()                
-                submit_validation_2(x)           
+                submit()               
+                submit_validation(x)              
                 download_click()
                 demand_category_accomm()
                 x += 1
                 break
             except:
-                print("Failed to click primary country")
+                print("Failed to primary country")
                 if (x < len(primary_country_name)):
                     driver.refresh()
                     page_validation(2)
@@ -297,5 +300,5 @@ def run():
     finished()
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':   
     run()

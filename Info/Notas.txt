@@ -1,4 +1,8 @@
 
+file_source = 'C:\\Users\\user\\Downloads\\'
+file_flight = 'C:\\Users\\user\\Downloads\\Vuelos'
+file_accomm = 'C:\\Users\\user\\Downloads\\Alojamientos'
+
 
 Cap #Extra 3 | Curso Python con Selenium | Selenium en segundo plano
 https://www.youtube.com/watch?v=a-O2K2VUFQg&list=PLas30d-GGNa2UW9-1H-NCNrUocvWD9cyh&index=24

@@ -66,15 +66,13 @@ def page_validation(j):
             break
         except:
             i += 1
-            if (i <= 2):
+            if (i <= 8):
                 print("Loading took too much time!-try again")
                 driver.refresh()
-            driver.close()                
-            print('Try again later')
-                #exit()
-                #pass
-    #execution = False
-    print('Finish page validation')
+            else:
+                driver.close()
+                print('Try again later')
+                exit()
 
 
 def initial_process():
@@ -147,26 +145,26 @@ def countries_compare_1():
 def demand_category_air():
     demand_category_click()
     clear_accom = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_option_48'))
-    driver.implicitly_wait(3)
+    time.sleep(0.01)
     clear_accom.click()
-    time.sleep(0.05)
+    time.sleep(0.01)
     air = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_option_47'))
-    driver.implicitly_wait(3)
+    time.sleep(0.01)
     air.click()
-    time.sleep(0.05)
+    time.sleep(0.01)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
 
 def demand_category_accomm():
     demand_category_click()
     clear_air = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_option_47'))
-    driver.implicitly_wait(3)
+    time.sleep(0.01)
     clear_air.click()
-    time.sleep(0.05)
+    time.sleep(0.01)
     accomm = WebDriverWait(driver, 10).until(lambda s: s.find_element(By.ID,'select_option_48'))
-    driver.implicitly_wait(3)
+    time.sleep(0.01)
     accomm.click()
-    time.sleep(0.05)
+    time.sleep(0.01)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
 

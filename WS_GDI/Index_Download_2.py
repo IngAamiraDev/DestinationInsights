@@ -8,6 +8,7 @@ import time
 import os
 import glob
 import collections
+import Files_Download_2
 
 
 options = webdriver.ChromeOptions() 
@@ -27,9 +28,9 @@ primary_country_name = ['Germany','Argentina','Australia','Austria','Belgium','C
 primary_country_id = ['select_option_637','select_option_565','select_option_568','select_option_569','select_option_575','select_option_593','select_option_612','select_option_600','select_option_611','select_option_603','select_option_761','select_option_608','select_option_614','select_option_619','select_option_790','select_option_763','select_option_792','select_option_630','select_option_631','select_option_640','select_option_656','select_option_660','select_option_662','select_option_663','select_option_665','select_option_701','select_option_695','select_option_718','select_option_707','select_option_729','select_option_730','select_option_791','select_option_736','select_option_768','select_option_769','select_option_782','select_option_783']
 primary_country_cod = ['DE','AR','AU','AT','BE','CA','CZ','CN','CY','CO','KR','HR','DK','EG','AE','ES','US','FI','FR','GR','IN','IE','IL','IT','JP','MA','MX','NO','NL','PL','PT','GB','RU','SE','CH','TN','TR']
 
-#Compare to Country Download Process 1
-compare_country_name_1 = ['Germany', 'Cyprus', 'Croatia', 'Egypt', 'Spain', 'France', 'Greece', 'Italy', 'Morocco', 'Portugal']
-compare_country_id_1 = ['select_option_887', 'select_option_861', 'select_option_858', 'select_option_869', 'select_option_1013', 'select_option_881', 'select_option_890', 'select_option_913', 'select_option_951', 'select_option_980']
+#Compare to Country Download Process 2
+compare_country_name_2 = ['United Kingdom','Tunisia','Turkey']
+compare_country_id_2 = ['select_option_1041', 'select_option_1032','select_option_1033']
 
 #Demand Category
 demand_category_list = ['Air','Accommodation']
@@ -128,17 +129,17 @@ def download_click():
 
 
 #Select Countries to Compare Download Process 1
-def countries_compare_1():
+def countries_compare_2():
     countries_compare_click()
     print('Country to compare is:')
-    for i in range(len(compare_country_name_1)):
+    for i in range(len(compare_country_name_2)):
         driver.implicitly_wait(3)
         while True:
             try:
                 countries = WebDriverWait(driver, 10).until(
-                        lambda s: s.find_element(By.ID, compare_country_id_1[i]))
+                        lambda s: s.find_element(By.ID, compare_country_id_2[i]))
                 countries.click()
-                print(compare_country_name_1[i])
+                print(compare_country_name_2[i])
                 break
             except:
                 pass
@@ -149,12 +150,12 @@ def demand_category_air():
     demand_category_click()
     clear_accom = WebDriverWait(driver, 10).until(
             lambda s: s.find_element(By.ID, 'select_option_48'))
-    driver.implicitly_wait(3)
+    time.sleep(0.05)
     clear_accom.click()
     time.sleep(0.05)
     air = WebDriverWait(driver, 10).until(
             lambda s: s.find_element(By.ID, 'select_option_47'))
-    driver.implicitly_wait(3)
+    time.sleep(0.05)
     air.click()
     time.sleep(0.05)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
@@ -164,12 +165,12 @@ def demand_category_accomm():
     demand_category_click()
     clear_air = WebDriverWait(driver, 10).until(
             lambda s: s.find_element(By.ID, 'select_option_47'))
-    driver.implicitly_wait(3)
+    time.sleep(0.05)
     clear_air.click()
     time.sleep(0.05)
     accomm = WebDriverWait(driver, 10).until(
             lambda s: s.find_element(By.ID, 'select_option_48'))
-    driver.implicitly_wait(3)
+    time.sleep(0.05)
     accomm.click()
     time.sleep(0.05)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
@@ -196,7 +197,7 @@ def submit_validation_1(x):
             driver.refresh()
             page_validation(2)
             status()
-            download_process_1(x)
+            download_process_2(x)
     print("Click submit is ready!")
 
 
@@ -206,13 +207,11 @@ def delete_last_file():
     accom_csv = [i for i in get_files if i.startswith('ACCOMMODATION', 32, 54)]
     if len(accom_csv) > len(flight_csv):
         files_path = os.path.join(file_source, '*')
-        files = sorted(glob.iglob(files_path),
-                       key=os.path.getctime, reverse=True)
+        files = sorted(glob.iglob(files_path),key=os.path.getctime, reverse=True)
         os.remove(files[0])
     elif len(flight_csv) > len(accom_csv):
         files_path = os.path.join(file_source, '*')
-        files = sorted(glob.iglob(files_path),
-                       key=os.path.getctime, reverse=True)
+        files = sorted(glob.iglob(files_path),key=os.path.getctime, reverse=True)
         os.remove(files[0])
     else:
         pass
@@ -308,10 +307,10 @@ def finished():
     driver.close()
 
 
-#Download Process 1
-def download_process_1(x):
+#Download Process 2
+def download_process_2(x):
     date_range()
-    countries_compare_1()
+    countries_compare_2()
     print('Primary Country is:')
     for x in range(x, x+1):
         while True:
@@ -332,21 +331,20 @@ def download_process_1(x):
                 demand_category_accomm()
                 x = index_primary_country_cod()
                 if x > 0:
-                    countries_compare_1()
+                    countries_compare_2()
                     demand_category_accomm()
-                    download_process_1(x)
+                    download_process_2(x)
                 else:
                     pass
-                break
             except:
                 print("Failed to primary country")
                 if (x <= x):
                     driver.refresh()
                     page_validation(2)
                     status()
-                    download_process_1(x)
+                    download_process_2(x)
                     exit()
-    print('Process 1 Ok')
+    print('Process 2 Ok')
 
 
 def run(x = index_primary_country_cod()):
@@ -356,12 +354,13 @@ def run(x = index_primary_country_cod()):
         page_validation(1)
         initial_process()
         status()
-        download_process_1(x)
+        download_process_2(x)
     else:
-        print('Process download 1 Ok')
+        print('Process download 2 Ok')
 
 
 if __name__ == '__main__':
     start()
     run()
+    Files_Download_2.run()
     finished()

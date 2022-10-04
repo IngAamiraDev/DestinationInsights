@@ -6,7 +6,8 @@ file_source = 'C:\\Users\\user\\Downloads\\'
 
 
 def extract_file(list):
-    return list[0:-4]
+    #return list[0:-4]
+    return list[0:-8]
 
 
 def rename_file():
@@ -16,17 +17,12 @@ def rename_file():
     download_file = flight_csv + accom_csv
     rename_new_file = [extract_file(i) for i in download_file]
     for i in range(len(rename_new_file)):
-        rename_new_file[i] = (rename_new_file[i] + ' (1).csv')
+        #rename_new_file[i] = (rename_new_file[i] + ' (1).csv')
+        rename_new_file[i] = (rename_new_file[i] + '.csv')
         source = file_source + download_file[i]
         destination = file_source + rename_new_file[i]
         os.rename(source,destination)
     return print('Process rename file Ok')
         
 rename_file()
-
-#new_file = [rename_new_file(i) for i in new_file]
-
-
-
-#new_file = [extract_file(i) for i in accom_csv]
 

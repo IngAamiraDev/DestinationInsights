@@ -1,3 +1,3 @@
-# Proyecto Destinat Ioninsights (GDI)
+# Proyecto Destination Insights (GDI)
 
 ## https://destinationinsights.withgoogle.com/intl/en_ALL/
